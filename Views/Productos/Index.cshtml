@@ -34,6 +34,12 @@
                     <h5 class="card-title">@item.Nombre</h5>
                     <p class="card-text">@item.Descripcion</p>
                     <p class="card-text">S/. @item.Precio</p>
+                    <!-- Acciones CRUD -->
+                    <div class="mt-2">
+                        <a asp-action="Detail" asp-route-id="@item.ID" class="btn btn-info btn-sm">Ver</a>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-warning btn-sm">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger btn-sm">Eliminar</a>
+                    </div>
                 </div>
             </div>
         </div>

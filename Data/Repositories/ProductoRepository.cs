@@ -16,7 +16,17 @@ namespace VeterinariaWeb.Data.Repositories
 
         public bool Eliminar(int id)
         {
-            throw new NotImplementedException();
+            var exito = false;
+            using (var conexion = new SqlConnection(cadenaConexion))
+            {
+                using (var comando = new SqlCommand("DELETE FROM Productos WHERE ID = @ID", conexion))
+                {
+                    comando.Parameters.AddWithValue("@ID", id);
+                    conexion.Open();
+                    exito = comando.ExecuteNonQuery() > 0;
+                }
+            }
+            return exito;
         }
 
         public List<Producto> Listar()

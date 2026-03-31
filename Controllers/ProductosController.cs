@@ -110,5 +110,25 @@ namespace VeterinariaWeb.Controllers
                 return RedirectToAction("Detail", new { id = producto.ID });
             return View(producto);
         }
+
+        public IActionResult Delete(int id)
+        {
+            var productoBuscado = _productoDB.ObtenerPorID(id);
+            if (productoBuscado == null)
+                return NotFound();
+
+            return View(productoBuscado);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var exito = _productoDB.Eliminar(id);
+            if (exito)
+                return RedirectToAction("Index");
+
+            return View();
+        }
+
     }
 }
