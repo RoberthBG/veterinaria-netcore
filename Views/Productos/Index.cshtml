@@ -1,44 +1,51 @@
 ﻿@model IEnumerable<VeterinariaWeb.Models.Producto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Productos";
 }
 
-<h1>Index</h1>
+<!-- Encabezado -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary">🐾 Catálogo de Productos</h2>
+    <a asp-action="Create" class="btn btn-success btn-lg">➕ Agregar Producto</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<!-- Filtros -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form class="row g-3">
+            <div class="col-md-4">
+                <label for="categoria" class="form-label fw-bold">Categoría</label>
+                <select class="form-select" name="categoria" asp-items="ViewBag.categorias">
+                    <option value="">--TODOS--</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="producto" class="form-label fw-bold">Producto</label>
+                <input class="form-control" type="text" name="producto" value="@ViewBag.busquedaActual" placeholder="Buscar producto..." />
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">🔍 Buscar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-<form class="row g-3">
-    <div class="col-auto">
-        <label for="categoria" class="form-label">Categoría</label>
-        <select class="form-select" name="categoria" asp-items="ViewBag.categorias">
-            <option value="">--TODOS--</option>
-        </select>
-    </div>
-    <div class="col-auto">
-        <label for="producto" class="form-label">Producto</label>
-        <input class="form-control" type="text" name="producto" value="@ViewBag.busquedaActual" />
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-<hr />
-<div class="row row-cols-1 row-cols-3">
+<!-- Tarjetas estilo catálogo -->
+<div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (var item in Model)
     {
         <div class="col">
-            <div class="card h-100">
+            <div class="card h-100 border-0 shadow-lg">
                 <img src="@item.Imagen" class="card-img-top" alt="@item.Nombre">
-                <div class="card-body">
-                    <h5 class="card-title">@item.Nombre</h5>
-                    <p class="card-text">@item.Descripcion</p>
-                    <p class="card-text">S/. @item.Precio</p>
-                    <!-- Acciones CRUD -->
-                    <div class="mt-2">
-                        <a asp-action="Detail" asp-route-id="@item.ID" class="btn btn-info btn-sm">Ver</a>
-                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-warning btn-sm">Editar</a>
-                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger btn-sm">Eliminar</a>
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">@item.Nombre</h5>
+                    <p class="text-muted">@item.Descripcion</p>
+                    <h6 class="fw-bold text-success">S/. @item.Precio</h6>
+                    <div class="btn-group mt-3">
+                        <a asp-action="Detail" asp-route-id="@item.ID" class="btn btn-outline-info btn-sm">Ver</a>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-outline-warning btn-sm">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-outline-danger btn-sm">Eliminar</a>
                     </div>
                 </div>
             </div>
@@ -46,8 +53,9 @@
     }
 </div>
 
+<!-- Paginación -->
 <nav aria-label="Page Navigation">
-    <ul class="pagination pagination-sm">
+    <ul class="pagination pagination-lg justify-content-center mt-4">
         @for (int i = 0; i < ViewBag.paginas; i++)
         {
             <li class="page-item @(ViewBag.paginaActual == (i + 1) ? "active" : "")">
