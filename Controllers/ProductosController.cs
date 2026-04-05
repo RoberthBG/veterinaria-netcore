@@ -57,6 +57,7 @@ namespace VeterinariaWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken] // importante para seguridad
         public IActionResult Create(ProductoVM model)
         {
             if (!ModelState.IsValid)
@@ -66,13 +67,10 @@ namespace VeterinariaWeb.Controllers
                 return View(model);
             }
 
-
-            /*TRABAJAR CON LA IMAGEN*/
             string nombreImagen = "";
-
             if (model.ImageFile != null)
             {
-                nombreImagen = $"{Guid.NewGuid().ToString()}{Path.GetExtension(model.ImageFile.FileName)}";
+                nombreImagen = $"{Guid.NewGuid()}{Path.GetExtension(model.ImageFile.FileName)}";
                 var pathImagen = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/img/productos", nombreImagen);
 
                 using (var stream = new FileStream(pathImagen, FileMode.Create))
@@ -91,8 +89,17 @@ namespace VeterinariaWeb.Controllers
             };
 
             var exito = _productoDB.Registrar(producto);
-            return RedirectToAction("Index");
+
+            if (exito)
+            {
+                TempData["SuccessMessage"] = "✅ El producto se creó correctamente";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["ErrorMessage"] = "❌ Ocurrió un error al crear el producto";
+            return RedirectToAction(nameof(Index));
         }
+
 
         public IActionResult Edit(int id)
         {
