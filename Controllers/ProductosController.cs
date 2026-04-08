@@ -56,6 +56,7 @@ namespace VeterinariaWeb.Controllers
             return View(new ProductoVM());
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken] // importante para seguridad
         public IActionResult Create(ProductoVM model)
@@ -105,18 +106,67 @@ namespace VeterinariaWeb.Controllers
         {
             var productoBuscado = _productoDB.ObtenerPorID(id);
             var categorias = _categoriaDB.Listar();
-            ViewBag.Categorias = new SelectList(categorias, "ID", "Nombre");
-            return View(productoBuscado);
+            ViewBag.Categorias = new SelectList(categorias, "ID", "Nombre", productoBuscado.CategoriaID);
+
+            var vm = new ProductoVM
+            {
+                ID = productoBuscado.ID,
+                Nombre = productoBuscado.Nombre,
+                Descripcion = productoBuscado.Descripcion,
+                Precio = productoBuscado.Precio,
+                CategoriaID = productoBuscado.CategoriaID,
+                Activo = productoBuscado.Activo,
+                Imagen = productoBuscado.Imagen
+            };
+
+            return View(vm);
         }
 
+
         [HttpPost]
-        public IActionResult Edit(Producto producto)
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(ProductoVM model)
         {
+            if (!ModelState.IsValid)
+            {
+                var categorias = _categoriaDB.Listar();
+                ViewBag.Categorias = new SelectList(categorias, "ID", "Nombre", model.CategoriaID);
+                return View(model);
+            }
+
+            var producto = _productoDB.ObtenerPorID(model.ID);
+            if (producto == null) return NotFound();
+
+            producto.Nombre = model.Nombre;
+            producto.Descripcion = model.Descripcion;
+            producto.Precio = model.Precio;
+            producto.CategoriaID = model.CategoriaID;
+            producto.Activo = model.Activo;
+
+            if (model.ImageFile != null)
+            {
+                string nombreImagen = $"{Guid.NewGuid()}{Path.GetExtension(model.ImageFile.FileName)}";
+                var pathImagen = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/img/productos", nombreImagen);
+
+                using (var stream = new FileStream(pathImagen, FileMode.Create))
+                {
+                    model.ImageFile.CopyTo(stream);
+                }
+
+                producto.Imagen = $"assets/img/productos/{nombreImagen}";
+            }
+
             var exito = _productoDB.Modificar(producto);
             if (exito)
-                return RedirectToAction("Detail", new { id = producto.ID });
-            return View(producto);
+            {
+                TempData["SuccessMessage"] = "✏️ El producto se editó correctamente";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["ErrorMessage"] = "❌ Ocurrió un error al editar el producto";
+            return RedirectToAction(nameof(Index));
         }
+
 
         public IActionResult Delete(int id)
         {
@@ -126,6 +176,7 @@ namespace VeterinariaWeb.Controllers
 
             return View(productoBuscado);
         }
+
 
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)

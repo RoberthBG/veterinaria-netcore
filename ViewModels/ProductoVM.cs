@@ -5,6 +5,8 @@ namespace VeterinariaWeb.ViewModels
 {
     public class ProductoVM
     {
+        public int ID { get; set; }
+
         [DisplayName("Nombre del producto")]
         [MinLength(10, ErrorMessage = "La longitud mínima del nombre es de 10 caracteres.")]
         [Required(ErrorMessage = "El nombre del producto es obligatorio.")]
@@ -23,9 +25,12 @@ namespace VeterinariaWeb.ViewModels
         [Required(ErrorMessage = "Debe indicar la categoría del producto.")]
         public int CategoriaID { get; set; }
 
-        [DisplayName("Imagen del producto")]
-        //[Required(ErrorMessage ="La imagen es obligatoria")]
-        public IFormFile ImageFile { get; set; }
+        public bool Activo { get; set; }
 
+        [DisplayName("Imagen actual")]
+        public string Imagen { get; set; } = string.Empty;
+
+        [DisplayName("Nueva imagen")]
+        public IFormFile? ImageFile { get; set; }
     }
 }

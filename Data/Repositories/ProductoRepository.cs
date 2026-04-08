@@ -58,19 +58,23 @@ namespace VeterinariaWeb.Data.Repositories
             using (var conexion = new SqlConnection(cadenaConexion))
             {
                 using (var comando = new SqlCommand("UPDATE Productos SET Nombre = @nombre, Descripcion = @descripcion, " +
-                    "Precio = @precio, CategoriaID = @categoria WHERE ID = @id", conexion))
+                    "Precio = @precio, CategoriaID = @categoria, PathImagen = @imagen, Activo = @activo WHERE ID = @id", conexion))
                 {
                     comando.Parameters.AddWithValue("@nombre", entity.Nombre);
                     comando.Parameters.AddWithValue("@descripcion", entity.Descripcion);
                     comando.Parameters.AddWithValue("@precio", entity.Precio);
                     comando.Parameters.AddWithValue("@categoria", entity.CategoriaID);
-                    comando.Parameters.AddWithValue("@ID", entity.ID);
+                    comando.Parameters.AddWithValue("@imagen", entity.Imagen); 
+                    comando.Parameters.AddWithValue("@activo", entity.Activo);
+                    comando.Parameters.AddWithValue("@id", entity.ID);
+
                     conexion.Open();
                     exito = comando.ExecuteNonQuery() > 0;
                 }
             }
             return exito;
         }
+
 
         public Producto ObtenerPorID(int id)
         {
