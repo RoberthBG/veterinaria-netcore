@@ -1,26 +1,63 @@
 ﻿@model VeterinariaWeb.Models.Producto
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Producto";
 }
 
-<h1>Eliminar Producto</h1>
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h2 class="text-danger fw-bold">🗑️ Eliminar Producto</h2>
+        <p class="text-muted">Revise los datos antes de confirmar la eliminación.</p>
+    </div>
 
-<h4>¿Está seguro que desea eliminar este producto?</h4>
-<hr />
-<dl class="row">
-    <dt class="col-sm-2">Nombre</dt>
-    <dd class="col-sm-10">@Model.Nombre</dd>
+    <div class="alert alert-warning shadow-sm">
+        <strong>⚠️ Atención:</strong> Esta acción eliminará el producto de forma permanente y no se podrá recuperar.
+    </div>
 
-    <dt class="col-sm-2">Descripción</dt>
-    <dd class="col-sm-10">@Model.Descripcion</dd>
+    <div class="card border-danger shadow-sm mb-4">
+        <div class="card-header bg-danger text-white fw-bold">
+            Detalles del producto a eliminar
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4 fw-bold">Nombre</dt>
+                        <dd class="col-sm-8">@Model.Nombre</dd>
 
-    <dt class="col-sm-2">Precio</dt>
-    <dd class="col-sm-10">S/. @Model.Precio</dd>
-</dl>
+                        <dt class="col-sm-4 fw-bold">Descripción</dt>
+                        <dd class="col-sm-8">@Model.Descripcion</dd>
 
-<form asp-action="Delete">
-    <input type="hidden" asp-for="ID" />
-    <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+                        <dt class="col-sm-4 fw-bold">Precio</dt>
+                        <dd class="col-sm-8">S/. @Model.Precio</dd>
+
+                        <dt class="col-sm-4 fw-bold">Categoría</dt>
+                        <dd class="col-sm-8">@Model.Categoria?.Nombre</dd>
+
+                        <dt class="col-sm-4 fw-bold">Activo</dt>
+                        <dd class="col-sm-8">@(Model.Activo ? "Sí" : "No")</dd>
+                    </dl>
+                </div>
+
+                <div class="col-md-6 text-center">
+                    <label class="fw-bold mb-2">Imagen del producto</label>
+                    <img src="@Url.Content("~/" + Model.Imagen)" alt="Imagen del producto"
+                         class="img-fluid rounded shadow-sm border" style="max-height:250px;" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="text-center">
+        <input type="hidden" asp-for="ID" />
+        <div class="d-flex justify-content-center gap-3">
+            <button type="submit" class="btn btn-danger">
+                🗑️ Confirmar eliminación
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                ⬅️ Cancelar
+            </a>
+        </div>
+    </form>
+
+</div>

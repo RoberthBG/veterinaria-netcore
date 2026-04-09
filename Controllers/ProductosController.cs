@@ -179,13 +179,18 @@ namespace VeterinariaWeb.Controllers
 
 
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             var exito = _productoDB.Eliminar(id);
             if (exito)
-                return RedirectToAction("Index");
+            {
+                TempData["SuccessMessage"] = "🗑️ El producto se eliminó correctamente";
+                return RedirectToAction(nameof(Index));
+            }
 
-            return View();
+            TempData["ErrorMessage"] = "❌ Ocurrió un error al eliminar el producto";
+            return RedirectToAction(nameof(Index));
         }
 
     }
